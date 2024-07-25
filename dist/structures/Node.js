@@ -6,6 +6,7 @@ const tslib_1 = require("tslib");
 const ws_1 = tslib_1.__importDefault(require("ws"));
 const undici_1 = require("undici");
 const Utils_1 = require("./Utils");
+
 function check(options) {
     if (!options)
         throw new TypeError("NodeOptions must not be empty.");
@@ -35,6 +36,7 @@ function check(options) {
         typeof options.requestTimeout !== "number")
         throw new TypeError('Node option "requestTimeout" must be a number.');
 }
+
 class Node {
     options;
     /** The socket for the node. */
@@ -124,7 +126,7 @@ class Node {
             "User-Id": this.manager.options.clientId,
             "Client-Name": this.manager.options.clientName,
         };
-        this.socket = new ws_1.default(`ws${this.options.secure ? "s" : ""}://${this.address}`, { headers });
+        this.socket = new ws_1.default(`ws${this.options.secure ? "s" : ""}://${this.address}/v4/websocket`, { headers });
         this.socket.on("open", this.open.bind(this));
         this.socket.on("close", this.close.bind(this));
         this.socket.on("message", this.message.bind(this));

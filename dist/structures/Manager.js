@@ -6,6 +6,7 @@ const collection_1 = require("@discordjs/collection");
 const events_1 = require("events");
 const Utils_1 = require("./Utils");
 const REQUIRED_KEYS = ["event", "guildId", "op", "sessionId"];
+
 function check(options) {
     if (!options)
         throw new TypeError("ManagerOptions must not be empty.");
@@ -36,6 +37,7 @@ function check(options) {
         typeof options.defaultSearchPlatform !== "string")
         throw new TypeError('Manager option "defaultSearchPlatform" must be a string.');
 }
+
 /**
  * The main hub for interacting with Lavalink and using Erela.JS,
  * @noInheritDoc
@@ -64,14 +66,14 @@ class Manager extends events_1.EventEmitter {
         return this.nodes
             .filter((node) => node.connected)
             .sort((a, b) => {
-            const aload = a.stats.cpu
-                ? (a.stats.cpu.systemLoad / a.stats.cpu.cores) * 100
-                : 0;
-            const bload = b.stats.cpu
-                ? (b.stats.cpu.systemLoad / b.stats.cpu.cores) * 100
-                : 0;
-            return aload - bload;
-        });
+                const aload = a.stats.cpu
+                    ? (a.stats.cpu.systemLoad / a.stats.cpu.cores) * 100
+                    : 0;
+                const bload = b.stats.cpu
+                    ? (b.stats.cpu.systemLoad / b.stats.cpu.cores) * 100
+                    : 0;
+                return aload - bload;
+            });
     }
     /**
      * Initiates the Manager class.
@@ -150,7 +152,7 @@ class Manager extends events_1.EventEmitter {
                 search = `${_source}:${search}`;
             }
             const res = await node
-                .makeRequest(`/loadtracks?identifier=${encodeURIComponent(search)}`)
+                .makeRequest(`/v4/loadtracks?identifier=${encodeURIComponent(search)}`)
                 .catch(err => reject(err));
             if (!res) {
                 return reject(new Error("Query not found."));
@@ -181,7 +183,7 @@ class Manager extends events_1.EventEmitter {
             const node = this.nodes.first();
             if (!node)
                 throw new Error("No available nodes.");
-            const res = await node.makeRequest(`/decodetracks`, r => {
+            const res = await node.makeRequest(`/v4/decodetracks`, r => {
                 r.method = "POST";
                 r.body = JSON.stringify(tracks);
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
